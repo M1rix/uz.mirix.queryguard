@@ -275,18 +275,6 @@ CI verifies Java 17 and Java 21 and does not publish build artifacts.
 
 See [`docs/architecture.md`](docs/architecture.md) for internals.
 
-## Release policy
-
-QueryGuard follows Semantic Versioning:
-
-```text
-v0.1.0  initial public release
-v0.x.y  pre-1.0 feature and bug-fix releases
-v1.0.0  stable public API
-```
-
-Pin an exact release tag in production builds instead of using `master-SNAPSHOT` or other moving versions.
-
 ## License
 
 Apache-2.0.
