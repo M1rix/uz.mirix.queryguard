@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/M1rix/uz.mirix.queryguard/actions/workflows/ci.yml/badge.svg)](https://github.com/M1rix/uz.mirix.queryguard/actions/workflows/ci.yml)
 [![JitPack](https://jitpack.io/v/M1rix/uz.mirix.queryguard.svg)](https://jitpack.io/#M1rix/uz.mirix.queryguard)
-[![Release](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/M1rix/uz.mirix.queryguard/releases/tag/v0.1.0)
+[![Release](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/M1rix/uz.mirix.queryguard/tree/v0.1.0)
 [![Java](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://adoptium.net/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
