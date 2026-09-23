@@ -2,6 +2,12 @@
 
 **Stop N+1 before production.**
 
+[![CI](https://github.com/M1rix/uz.mirix.queryguard/actions/workflows/ci.yml/badge.svg)](https://github.com/M1rix/uz.mirix.queryguard/actions/workflows/ci.yml)
+[![JitPack](https://jitpack.io/v/M1rix/uz.mirix.queryguard.svg)](https://jitpack.io/#M1rix/uz.mirix.queryguard)
+[![Release](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/M1rix/uz.mirix.queryguard/releases/tag/v0.1.0)
+[![Java](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://adoptium.net/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+
 QueryGuard is a lightweight Java/Spring Boot library that counts real JDBC executions inside a request, method, test, or explicit scope and turns hidden query regressions into diagnostics or failures.
 
 ```text
@@ -39,27 +45,85 @@ QueryGuard instruments JDBC, so the same mechanism observes Hibernate/JPA, Sprin
 
 Java 17+ is the baseline. The starter is built against Spring Boot 3.5.x.
 
-## Install locally
+## Installation
 
-Until a public Maven repository release exists:
+Current release: **`v0.1.0`**.
 
-```bash
-./mvnw clean install
+QueryGuard is distributed through [JitPack](https://jitpack.io/#M1rix/uz.mirix.queryguard). Because this repository is a multi-module Maven project, individual modules use:
+
+```text
+com.github.M1rix.uz.mirix.queryguard:<module>:v0.1.0
 ```
 
-Then add the starter:
+### Maven
+
+Add JitPack to your repositories:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+For a Spring Boot application, install the starter:
 
 ```xml
 <dependency>
-    <groupId>uz.mirix</groupId>
+    <groupId>com.github.M1rix.uz.mirix.queryguard</groupId>
     <artifactId>queryguard-spring-boot-starter</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>v0.1.0</version>
 </dependency>
 ```
 
+For JUnit 5 query-regression tests, add:
+
+```xml
+<dependency>
+    <groupId>com.github.M1rix.uz.mirix.queryguard</groupId>
+    <artifactId>queryguard-test</artifactId>
+    <version>v0.1.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+### Gradle Kotlin DSL
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.M1rix.uz.mirix.queryguard:queryguard-spring-boot-starter:v0.1.0")
+    testImplementation("com.github.M1rix.uz.mirix.queryguard:queryguard-test:v0.1.0")
+}
+```
+
+### Gradle Groovy DSL
+
+```groovy
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.M1rix.uz.mirix.queryguard:queryguard-spring-boot-starter:v0.1.0'
+    testImplementation 'com.github.M1rix.uz.mirix.queryguard:queryguard-test:v0.1.0'
+}
+```
+
+The Spring Boot starter is the recommended dependency for normal Spring applications. Do not depend on every QueryGuard module unless you explicitly need the lower-level APIs.
+
 The default setup is zero-config: when a Spring `DataSource` exists, QueryGuard instruments connections and creates a query scope per servlet request.
 
-## Query budgets
+## Quick start
+
+Put a budget around an endpoint or service method:
 
 ```java
 @QueryBudget(max = 10)
@@ -95,15 +159,6 @@ Use `action = BudgetAction.LOG` for diagnostics without failing execution.
 
 ## JUnit 5 regression tests
 
-```xml
-<dependency>
-    <groupId>uz.mirix</groupId>
-    <artifactId>queryguard-test</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-    <scope>test</scope>
-</dependency>
-```
-
 ```java
 @QueryGuardTest
 @QueryBudget(max = 5, failOnNPlusOne = true)
@@ -127,6 +182,13 @@ try (QueryScope scope = QueryGuard.openScope("invoice-generation")) {
     QueryReport report = scope.report();
     System.out.println(QueryReportFormatter.format(report));
 }
+```
+
+If you only need framework-free or JDBC-level integration, use the corresponding JitPack module directly:
+
+```text
+com.github.M1rix.uz.mirix.queryguard:queryguard-core:v0.1.0
+com.github.M1rix.uz.mirix.queryguard:queryguard-jdbc:v0.1.0
 ```
 
 ## Async context propagation
@@ -195,15 +257,35 @@ QueryGuard does **not retain JDBC bind values**. Bindings are reduced to opaque 
 - Final/custom `DataSource` implementations that cannot be class-proxied may need explicit `new QueryGuardDataSource(delegate)` wrapping.
 - N+1 detection is heuristic. Use `@QueryBudget` when the allowed query count is known and must be enforced deterministically.
 
-## Build
+## Build from source
 
 ```bash
 ./mvnw verify
 ```
 
+To install a local development build:
+
+```bash
+./mvnw clean install
+```
+
+Local development artifacts use the project-local `uz.mirix` coordinates. Consumers should use the JitPack coordinates shown above.
+
 CI verifies Java 17 and Java 21 and does not publish build artifacts.
 
 See [`docs/architecture.md`](docs/architecture.md) for internals.
+
+## Release policy
+
+QueryGuard follows Semantic Versioning:
+
+```text
+v0.1.0  initial public release
+v0.x.y  pre-1.0 feature and bug-fix releases
+v1.0.0  stable public API
+```
+
+Pin an exact release tag in production builds instead of using `master-SNAPSHOT` or other moving versions.
 
 ## License
 
